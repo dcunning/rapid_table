@@ -1,0 +1,72 @@
+# frozen_string_literal: true
+
+require "view_component"
+
+module RapidTable
+  # Base class for all tables
+  class Base < ViewComponent::Base
+    extend DSL
+
+    attr_reader :id
+    attr_reader :base_scope
+    attr_reader :template
+    attr_reader :table_name
+    attr_reader :config
+
+    # the action in which the table appears by default (not in response to a POST action)
+    attr_reader :action_name
+
+    def initialize(base_scope, id: nil, params: {}, template: nil, param_name: nil, action: params[:action], **options,
+                   &block)
+      raise ArgumentError, "records or block is required" if base_scope.nil? && block.nil?
+      raise ArgumentError, "records and block cannot be used together" if base_scope.present? && block.present?
+
+      super(**options)
+
+      @base_scope = base_scope || block
+      @template = template
+
+      @id = id || self.class.name.underscore.gsub("/", "_") if self.class.name
+      @table_name = self.class.table_name
+      @action_name = action
+
+      self.param_name = param_name
+      self.full_params = params
+
+      apply_initializers(options)
+    end
+
+    def records
+      @records ||= apply_filters(@base_scope)
+    end
+
+    def empty_message
+      t("empty_message")
+    end
+
+    def dom_id(record)
+      super if record.respond_to?(:to_key)
+    end
+
+    def table_path(view_context: self, **options)
+      options = options.reverse_merge(registered_params)
+      if param_name
+        view_context.url_for(action: action_name, param_name => options)
+      else
+        view_context.url_for(action: action_name, **options)
+      end
+    end
+
+  private
+
+    def t(key)
+      RapidTable.t(key, table_name:)
+    end
+
+    class << self
+      def table_name
+        name&.underscore
+      end
+    end
+  end
+end
