@@ -2,6 +2,7 @@
 
 require "zeitwerk"
 require "active_support/concern"
+require "active_support/core_ext/string/inflections"
 
 loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect(
@@ -26,14 +27,6 @@ module RapidTable
         "rapid_table.#{table_name}.#{key}",
         default: I18n.t("rapid_table.default.#{key}", default: nil),
       )
-    end
-
-    # Load ViewComponent-dependent classes when Rails is available
-    def load_view_components
-      return unless defined?(Rails)
-
-      require_relative "rapid_table/base"
-      require_relative "rapid_table/components/pagination_links"
     end
   end
 end

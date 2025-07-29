@@ -1,11 +1,11 @@
 module RapidTable
   module Ext
     module ActiveRecord
-      def self.included(base)
-        base.class_eval do
-          include Search if included_modules.include?(Concerns::Search)
-          include Sorting if included_modules.include?(Concerns::Sorting)
-        end
+      extend ActiveSupport::Concern
+
+      included do
+        include Search if included_modules.include?(Concerns::Search)
+        include Sorting if included_modules.include?(Concerns::Sorting)
       end
 
       def each_record(batch_size: nil, skip_pagination: false, &block)
@@ -18,16 +18,15 @@ module RapidTable
         record.send(record.class.primary_key)
       end
 
-      # TODO: support NULLS FIRST and NULLS LAST for order
       module Sorting
-        def self.included(base)
-          base.class_eval do
-            register_filter :sorting, unless: :skip_sorting?
+        extend ActiveSupport::Concern
 
-            column_class! do
-              attr_accessor :nulls_last
-              alias_method :nulls_last?, :nulls_last
-            end
+        included do
+          register_filter :sorting, unless: :skip_sorting?
+
+          column_class! do
+            attr_accessor :nulls_last
+            alias_method :nulls_last?, :nulls_last
           end
         end
 
@@ -48,21 +47,22 @@ module RapidTable
         end
       end
 
-      # register_initializer :search_dsl, before: :search do |table, config|
-
       module Search
-        def self.included(base)
-          base.class_eval do
-            # only search when the ActiveRecord class has a #search scope
-            register_initializer :search_activerecord, after: :search do |table, config|
-              base_scope = table.base_scope
-              config.skip_search = true unless base_scope.is_a?(::ActiveRecord::Relation) && base_scope.klass.respond_to?(:search)
-            end
+        extend ActiveSupport::Concern
+
+        included do
+          # only search when the ActiveRecord class has a #search scope
+          register_initializer :search_activerecord, after: :search do |table, config|
+            config.skip_search = true unless table.active_record_class_has_search_scope?
           end
         end
 
         def filter_search(scope)
           scope.search(search_query)
+        end
+
+        def active_record_class_has_search_scope?
+          base_scope.is_a?(::ActiveRecord::Relation) && base_scope.klass.respond_to?(:search)
         end
       end
     end

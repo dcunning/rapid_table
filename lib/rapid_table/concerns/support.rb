@@ -1,16 +1,13 @@
 module RapidTable
+  # The Support module provides a framework for the core functionality of RapidTable.
   module Support
-    def self.included(base)
-      base.class_eval do
-        include ExtendableClass
-        include Hotwire
-        include Params
-        include RegisterProcs
-      end
-    end
+    extend ActiveSupport::Concern
 
-    def record_id(_record)
-      raise ExtensionRequiredError
+    included do
+      include ExtendableClass
+      include Hotwire
+      include Params
+      include RegisterProcs
     end
   end
 end

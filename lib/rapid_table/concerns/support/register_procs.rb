@@ -1,18 +1,23 @@
+# frozen_string_literal: true
+
 module RapidTable
   module Support
+    # The RegisterProcs module helps tables register and apply initialization and filter procs.
+    # It provides a framework for defining and managing initialization and filter blocks
+    # that can be applied to tables in a decentralized-pluginable way.
     module RegisterProcs
-      def self.included(base)
-        base.class_eval do
-          extend ClassMethods
-          include ExtendableClass
+      extend ActiveSupport::Concern
 
-          attr_accessor :initializer_procs
-          attr_accessor :filter_procs
+      included do
+        extend ClassMethods
+        include ExtendableClass
 
-          attr_accessor :config
+        attr_accessor :initializer_procs
+        attr_accessor :filter_procs
 
-          def_extendable_class :config
-        end
+        attr_accessor :config
+
+        def_extendable_class :config
       end
 
     private

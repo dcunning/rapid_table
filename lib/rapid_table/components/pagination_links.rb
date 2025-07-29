@@ -2,6 +2,7 @@
 
 require "view_component"
 
+# The PaginationLinks component renders pagination links for a table.
 module RapidTable
   module Components
     class PaginationLinks < ViewComponent::Base

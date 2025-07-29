@@ -1,38 +1,44 @@
+# frozen_string_literal: true
+
 module RapidTable
+  # The Search module provides functionality for searching and filtering table data in RapidTable.
+  # It exposes the following configuration options to RapidTable::Base:
+  #
+  # @option config skip_search [Boolean] Whether to disable search functionality entirely
+  # @option config search_param [Symbol] The parameter name for the search query (default: :q)
   module Search
-    def self.included(base)
-      base.class_eval do
-        include RapidTable::Support
+    extend ActiveSupport::Concern
 
-        config_class! do
-          attr_accessor :skip_search
-          attr_accessor :search_param
+    included do
+      config_class! do
+        attr_accessor :skip_search
+        attr_accessor :search_param
 
-          alias_method :skip_search?, :skip_search
-        end
-
-        with_options to: :config do
-          delegate :skip_search?
-          delegate :search_param
-        end
-
-        register_initializer :search
-        register_filter :search, unless: :skip_search?
+        alias_method :skip_search?, :skip_search
       end
+
+      with_options to: :config do
+        delegate :skip_search?
+        delegate :search_param
+      end
+
+      register_initializer :search
+      register_filter :search, unless: :skip_search?
     end
 
-    def initialize_search(config)
-      config.search_param ||= :q
-
-      register_param_name(search_param)
-    end
-
+    # Gets the current search query from the request parameters.
+    #
+    # @return [String, nil] The search query from params, or nil if not present
     def search_query
       params[search_param]
     end
 
+    # Renders a search input field with the current search query.
+    #
+    # @param options [Hash] Additional HTML options for the input tag
+    # @return [String] The rendered search input HTML
     def search_field_tag(options = {})
-      @template.search_field_tag(
+      template.search_field_tag(
         param_name(search_param),
         search_query,
         id: id_for(:search),
@@ -41,6 +47,13 @@ module RapidTable
       )
     end
 
+    # Renders a search form with the search field and hidden parameters.
+    #
+    # @param url [String] The form action URL (defaults to current action)
+    # @param method [Symbol] The HTTP method for the form (default: :get)
+    # @param options [Hash] Additional HTML options for the form tag
+    # @yield [void] Optional block for custom form content
+    # @return [String] The rendered search form HTML
     def search_field_form(url: url_for(action: action_name), method: :get, **options, &block)
       form_tag(url, method:, **options.merge(data: { turbo_stream: })) do
         search = block_given? ? capture(&block) : search_field_tag
@@ -48,8 +61,25 @@ module RapidTable
       end
     end
 
+    # Filters the scope based on the search query. Must be implemented by extensions.
+    #
+    # @param scope [Object] The scope to filter (e.g., ActiveRecord::Relation)
+    # @return [Object] The filtered scope
+    # @raise [ExtensionRequiredError] If no extension provides this functionality
     def filter_search(scope)
       raise ExtensionRequiredError, "not implemented"
+    end
+
+  private
+
+    # Initializes search configuration with default values.
+    #
+    # @param config [Object] The configuration object containing search settings
+    # @return [void]
+    def initialize_search(config)
+      config.search_param ||= :q
+
+      register_param_name(search_param)
     end
   end
 end

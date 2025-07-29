@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
+unless RUBY_ENGINE == "truffleruby"
+  require "simplecov"
+  SimpleCov.start do
+    add_filter "/spec/"
+  end
+end
+
 require "rapid_table"
+
+Dir[File.join(__dir__, "support", "**", "*.rb")].sort.each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

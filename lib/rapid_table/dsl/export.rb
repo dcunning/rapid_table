@@ -2,7 +2,24 @@
 
 module RapidTable
   module DSL
+    # The Export DSL module provides class-level configuration for export functionality
+    # in RapidTable.
+    #
+    # @example Basic usage
+    #   class MyTable < RapidTable::Base
+    #     self.skip_export = false
+    #     self.csv_column_separator = ";"
+    #     self.export_batch_size = 500
+    #   end
+    #
+    # @example With export disabled
+    #   class MyTable < RapidTable::Base
+    #     self.skip_export = true
+    #   end
     module Export
+      # Extends the base class with export DSL functionality.
+      #
+      # @param base [Class] The table class to extend
       def self.extended(base)
         base.class_eval do
           include RapidTable::Export

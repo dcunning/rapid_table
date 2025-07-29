@@ -1,51 +1,51 @@
+# frozen_string_literal: true
+
 module RapidTable
+  # The Sorting module provides functionality for sorting table data in RapidTable.
+  # It exposes the following configuration options to RapidTable::Base:
+  #
+  # @option config skip_sorting [Boolean] Whether to disable sorting functionality entirely
+  # @option config sort_column_param [Symbol] The parameter name for the sort column (default: :sort)
+  # @option config sort_order_param [Symbol] The parameter name for the sort order (default: :dir)
+  # @option config sort_column_id [Symbol] The default column to sort by (default: nil)
+  # @option config sort_order [String] The default sort order (default: "asc")
+  #
+  # Column-level sorting options:
+  # @option config column.sortable [Boolean] Whether this column is sortable (default: false)
+  # @option config column.sort_order [String] The default sort order for this column (default: "asc")
   module Sorting
-    def self.included(base)
-      base.class_eval do
-        include RapidTable::Columns
+    extend ActiveSupport::Concern
 
-        attr_accessor :sort_column
+    included do
+      include Columns
 
-        register_initializer :sorting, after: :columns
-        register_filter :sorting, unless: :skip_sorting?
+      attr_accessor :sort_column
 
-        config_class! do
-          attr_accessor :skip_sorting
-          attr_accessor :sort_column_param
-          attr_accessor :sort_order_param
+      register_initializer :sorting, after: :columns
+      register_filter :sorting, unless: :skip_sorting?
 
-          attr_accessor :sort_column_id
-          attr_accessor :sort_order
+      config_class! do
+        attr_accessor :skip_sorting
+        attr_accessor :sort_column_param
+        attr_accessor :sort_order_param
 
-          alias_method :skip_sorting?, :skip_sorting
-        end
+        attr_accessor :sort_column_id
+        attr_accessor :sort_order
 
-        with_options to: :config do
-          delegate :skip_sorting?
-          delegate :sort_column_param
-          delegate :sort_order_param
-          delegate :sort_order
-        end
-
-        column_class! do
-          attr_accessor :sortable, :sort_order
-          alias_method :sortable?, :sortable
-        end
-      end
-    end
-
-    def initialize_sorting(config)
-      config.sort_column_param ||= :sort
-      config.sort_order_param ||= :dir
-      register_param_name(config.sort_column_param, config.sort_order_param)
-
-      sort_column_id = sort_column_param_value || config.sort_column_id
-      if sort_column_id.is_a?(Symbol) || sort_column_id.is_a?(String)
-        self.sort_column = find_sortable_column(sort_column_id)
+        alias_method :skip_sorting?, :skip_sorting
       end
 
-      # standardize on strings since we don't want to symbolize param values
-      config.sort_order = (sort_order_param_value || sort_order || sort_column&.sort_order)&.to_s || "asc"
+      with_options to: :config do
+        delegate :skip_sorting?
+        delegate :sort_column_param
+        delegate :sort_order_param
+        delegate :sort_order
+      end
+
+      column_class! do
+        attr_accessor :sortable, :sort_order
+        alias_method :sortable?, :sortable
+      end
     end
 
     def filter_sorting(scope)
@@ -107,6 +107,20 @@ module RapidTable
     end
 
   private
+
+    def initialize_sorting(config)
+      config.sort_column_param ||= :sort
+      config.sort_order_param ||= :dir
+      register_param_name(config.sort_column_param, config.sort_order_param)
+
+      sort_column_id = sort_column_param_value || config.sort_column_id
+      if sort_column_id.is_a?(Symbol) || sort_column_id.is_a?(String)
+        self.sort_column = find_sortable_column(sort_column_id)
+      end
+
+      # standardize on strings since we don't want to symbolize param values
+      config.sort_order = (sort_order_param_value || sort_order || sort_column&.sort_order)&.to_s || "asc"
+    end
 
     def find_sortable_column(id)
       columns.find { |column| column.sortable? && column.id.to_s == id.to_s }

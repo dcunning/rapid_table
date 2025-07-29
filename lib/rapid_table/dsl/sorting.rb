@@ -2,7 +2,24 @@
 
 module RapidTable
   module DSL
+    # The Sorting DSL module provides class-level configuration for sorting functionality
+    # in RapidTable.
+    #
+    # @example Basic usage
+    #   class MyTable < RapidTable::Base
+    #     self.skip_sorting = false
+    #     self.sort_column = :name
+    #     self.sort_order = :asc
+    #   end
+    #
+    # @example With sorting disabled
+    #   class MyTable < RapidTable::Base
+    #     self.skip_sorting = true
+    #   end
     module Sorting
+      # Extends the base class with sorting DSL functionality.
+      #
+      # @param base [Class] The table class to extend
       def self.extended(base)
         base.class_eval do
           extend Columns
@@ -24,27 +41,46 @@ module RapidTable
         end
       end
 
+      # Gets the default sort column for this table.
+      #
+      # @return [Symbol, nil] The sort column ID or nil if not set
       def sort_column
-        define_default_column_group.sort_column_id
+        default_column_group.sort_column_id
       end
 
+      # Sets the default sort column for this table.
+      #
+      # @param id [Symbol] The column ID to sort by
+      # @return [Object] The modified column group
       def sort_column=(id)
-        define_default_column_group.tap do |group|
+        default_column_group.tap do |group|
           group.sort_column_id = id
         end
       end
 
+      # Gets the default sort order for this table.
+      #
+      # @return [String, nil] The sort order ("asc" or "desc") or nil if not set
       def sort_order
-        define_default_column_group.sort_order
+        default_column_group.sort_order
       end
 
+      # Sets the default sort order for this table.
+      #
+      # @param order [String] The sort order ("asc" or "desc")
+      # @return [Object] The modified column group
       def sort_order=(order)
-        define_default_column_group.tap do |group|
+        default_column_group.tap do |group|
           group.sort_order = order
         end
       end
 
+      # Instance methods for handling sorting DSL initialization.
       module InstanceMethods
+        # Initializes sorting DSL configuration from column groups.
+        #
+        # @param config [Object] The configuration object
+        # @return [void]
         def initialize_sorting_dsl(config)
           config.skip_sorting = self.class.skip_sorting if config.skip_sorting.nil?
 

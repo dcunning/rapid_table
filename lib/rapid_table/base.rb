@@ -5,7 +5,7 @@ require "view_component"
 module RapidTable
   # Base class for all tables
   class Base < ViewComponent::Base
-    extend DSL
+    include RapidTable::Support
 
     attr_reader :id
     attr_reader :base_scope
@@ -46,6 +46,10 @@ module RapidTable
 
     def dom_id(record)
       super if record.respond_to?(:to_key)
+    end
+
+    def record_id(_record)
+      raise ExtensionRequiredError
     end
 
     def table_path(view_context: self, **options)
