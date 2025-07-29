@@ -31,12 +31,8 @@ module RapidTable
 
           register_initializer :sorting_dsl, after: :columns_dsl
 
-          config_class! do
-            attr_accessor :sort_column_id
-          end
-
           column_group_class! do
-            attr_accessor :sort_column_id, :sort_order
+            attr_accessor :sort_column, :sort_order
           end
         end
       end
@@ -45,7 +41,7 @@ module RapidTable
       #
       # @return [Symbol, nil] The sort column ID or nil if not set
       def sort_column
-        default_column_group.sort_column_id
+        default_column_group.sort_column
       end
 
       # Sets the default sort column for this table.
@@ -54,7 +50,7 @@ module RapidTable
       # @return [Object] The modified column group
       def sort_column=(id)
         default_column_group.tap do |group|
-          group.sort_column_id = id
+          group.sort_column = id
         end
       end
 
@@ -88,7 +84,7 @@ module RapidTable
           column_group = self.class.find_column_group!(column_group_id) if column_group_id
           return unless column_group
 
-          config.sort_column_id ||= column_group.sort_column_id
+          config.sort_column ||= column_group.sort_column
           config.sort_order ||= column_group.sort_order
         end
       end

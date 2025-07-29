@@ -7,7 +7,7 @@ module RapidTable
   # @option config skip_sorting [Boolean] Whether to disable sorting functionality entirely
   # @option config sort_column_param [Symbol] The parameter name for the sort column (default: :sort)
   # @option config sort_order_param [Symbol] The parameter name for the sort order (default: :dir)
-  # @option config sort_column_id [Symbol] The default column to sort by (default: nil)
+  # @option config sort_column [Symbol] The default column to sort by (default: nil)
   # @option config sort_order [String] The default sort order (default: "asc")
   #
   # Column-level sorting options:
@@ -27,7 +27,7 @@ module RapidTable
         attr_accessor :sort_column_param
         attr_accessor :sort_order_param
 
-        attr_accessor :sort_column_id
+        attr_accessor :sort_column
         attr_accessor :sort_order
 
         alias_method :skip_sorting?, :skip_sorting
@@ -48,7 +48,7 @@ module RapidTable
     def sort_column
       return @sort_column if defined?(@sort_column)
 
-      sort_column_id = sort_column_param_value || config.sort_column_id
+      sort_column_id = sort_column_param_value || config.sort_column
       return unless sort_column_id.is_a?(Symbol) || sort_column_id.is_a?(String)
 
       @sort_column = find_sortable_column(sort_column_id)

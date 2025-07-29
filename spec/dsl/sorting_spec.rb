@@ -57,7 +57,7 @@ RSpec.describe RapidTable::DSL::Sorting do
       
       table = table_class.new([])
       expect(table.skip_sorting?).to be_truthy
-      expect(table.config.sort_column_id).to eq(:name)
+      expect(table.config.sort_column).to eq(:name)
       expect(table.config.sort_order).to eq("desc")
     end
 
@@ -83,7 +83,7 @@ RSpec.describe RapidTable::DSL::Sorting do
       table_class.sort_order = "desc"
       
       group = table_class.find_column_group(:default)
-      expect(group.sort_column_id).to eq(:name)
+      expect(group.sort_column).to eq(:name)
       expect(group.sort_order).to eq("desc")
     end
   end
