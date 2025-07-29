@@ -19,8 +19,6 @@ module RapidTable
     included do
       include Columns
 
-      attr_accessor :sort_column
-
       register_initializer :sorting, after: :columns
       register_filter :sorting, unless: :skip_sorting?
 
@@ -39,7 +37,6 @@ module RapidTable
         delegate :skip_sorting?
         delegate :sort_column_param
         delegate :sort_order_param
-        delegate :sort_order
       end
 
       column_class! do
@@ -48,7 +45,20 @@ module RapidTable
       end
     end
 
-    def filter_sorting(scope)
+    def sort_column
+      return @sort_column if defined?(@sort_column)
+
+      sort_column_id = sort_column_param_value || config.sort_column_id
+      return unless sort_column_id.is_a?(Symbol) || sort_column_id.is_a?(String)
+
+      @sort_column = find_sortable_column(sort_column_id)
+    end
+
+    def sort_order
+      @sort_order ||= (sort_order_param_value || config.sort_order || sort_column&.sort_order)&.to_s || "asc"
+    end
+
+    def filter_sorting(_scope)
       raise ExtensionRequiredError
     end
 
@@ -112,14 +122,6 @@ module RapidTable
       config.sort_column_param ||= :sort
       config.sort_order_param ||= :dir
       register_param_name(config.sort_column_param, config.sort_order_param)
-
-      sort_column_id = sort_column_param_value || config.sort_column_id
-      if sort_column_id.is_a?(Symbol) || sort_column_id.is_a?(String)
-        self.sort_column = find_sortable_column(sort_column_id)
-      end
-
-      # standardize on strings since we don't want to symbolize param values
-      config.sort_order = (sort_order_param_value || sort_order || sort_column&.sort_order)&.to_s || "asc"
     end
 
     def find_sortable_column(id)

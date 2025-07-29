@@ -13,13 +13,8 @@ module RapidTable
     attr_reader :table_name
     attr_reader :config
 
-    # the action in which the table appears by default (not in response to a POST action)
-    attr_reader :action_name
-
-    def initialize(base_scope, id: nil, params: {}, template: nil, param_name: nil, action: params[:action], **options,
-                   &block)
-      raise ArgumentError, "records or block is required" if base_scope.nil? && block.nil?
-      raise ArgumentError, "records and block cannot be used together" if base_scope.present? && block.present?
+    def initialize(base_scope, id: nil, template: nil, **options, &block)
+      ensure_base_scope_or_block(base_scope, block)
 
       super(**options)
 
@@ -28,10 +23,6 @@ module RapidTable
 
       @id = id || self.class.name.underscore.gsub("/", "_") if self.class.name
       @table_name = self.class.table_name
-      @action_name = action
-
-      self.param_name = param_name
-      self.full_params = params
 
       apply_initializers(options)
     end
@@ -65,6 +56,11 @@ module RapidTable
 
     def t(key)
       RapidTable.t(key, table_name:)
+    end
+
+    def ensure_base_scope_or_block(base_scope, block)
+      raise ArgumentError, "records or block is required" if base_scope.nil? && block.nil?
+      raise ArgumentError, "records and block cannot be used together" if base_scope.present? && block.present?
     end
 
     class << self

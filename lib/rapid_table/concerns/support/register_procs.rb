@@ -51,6 +51,7 @@ module RapidTable
         end
       end
 
+      # Class methods for registering initialization and filter procs.
       module ClassMethods
         def initializer_procs
           @initializer_procs ||= superclass.respond_to?(:initializer_procs) ? superclass.initializer_procs.dup : []
@@ -70,6 +71,7 @@ module RapidTable
 
       private
 
+        # rubocop:disable Metrics/ParameterLists
         def add_proc(procs, id, block, after: nil, before: nil, **options)
           existing_index = find_proc_index(procs, id)
 
@@ -89,6 +91,7 @@ module RapidTable
             procs << element
           end
         end
+        # rubocop:enable Metrics/ParameterLists
 
         def find_proc_index!(procs, id)
           find_proc_index(procs, id) || raise(ArgumentError, "Unknown proc: #{id.inspect}")

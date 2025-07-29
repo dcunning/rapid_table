@@ -6,16 +6,13 @@ module RapidTable
   #
   # @option config skip_pagination [Boolean] Whether to disable pagination entirely
   # @option config per_page [Integer] The number of records to display per page
-  # @option config available_per_pages [Array<Integer>] Available per-page options for the select dropdown (default: [25, 50, 100])
+  # @option config available_per_pages [Array<Integer>] Available per-page options (default: [25, 50, 100])
   # @option config page_param [Symbol] The parameter name for the current page (default: :page)
   # @option config per_page_param [Symbol] The parameter name for records per page (default: :per)
   module Pagination
     extend ActiveSupport::Concern
 
     included do
-      attr_accessor :page
-      attr_accessor :per_page
-
       config_class! do
         attr_accessor :skip_pagination
         attr_accessor :per_page
@@ -34,6 +31,24 @@ module RapidTable
       end
 
       register_initializer :pagination
+    end
+
+    def per_page
+      return @per_page if defined?(@per_page)
+
+      @per_page = per_page_param_value || config.per_page
+      @per_page ||= available_per_pages.first unless available_per_pages.include?(@per_page)
+
+      @per_page
+    end
+
+    def page
+      return @page if defined?(@page)
+
+      @page = page_param_value&.to_i
+      @page = 1 if !page || page < 1
+
+      @page
     end
 
     # Determines if pagination controls should be hidden because there's only one page of results
@@ -125,14 +140,7 @@ module RapidTable
     def initialize_pagination(config)
       config.page_param ||= :page
       config.per_page_param ||= :per
-
       config.available_per_pages ||= [25, 50, 100]
-
-      self.per_page ||= per_page_param_value || config.per_page
-      self.per_page ||= config.available_per_pages.first unless config.available_per_pages.include?(per_page)
-
-      self.page = page_param_value&.to_i
-      self.page = 1 if !page || page < 1
 
       register_param_name(page_param, per_page_param)
     end

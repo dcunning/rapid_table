@@ -39,8 +39,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "view_component", ">= 3.0"
   spec.add_dependency "zeitwerk", "~> 2.6"
 
-  spec.add_development_dependency "sqlite3", ">= 2.1"
-
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
 end

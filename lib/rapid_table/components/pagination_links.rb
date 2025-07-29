@@ -2,9 +2,9 @@
 
 require "view_component"
 
-# The PaginationLinks component renders pagination links for a table.
 module RapidTable
   module Components
+    # The PaginationLinks component renders pagination links for a table.
     class PaginationLinks < ViewComponent::Base
       include RapidTable::Support::Hotwire
 
@@ -13,6 +13,7 @@ module RapidTable
 
       attr_accessor :skip_turbo
 
+      # rubocop:disable Metrics/ParameterLists
       def initialize(current_page, total_pages, path:, table_name: nil, skip_turbo: false, **options)
         super
 
@@ -26,6 +27,7 @@ module RapidTable
 
         self.skip_turbo = skip_turbo
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def render?
         @total_pages > 1

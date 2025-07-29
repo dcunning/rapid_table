@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module RapidTable
   module Ext
+    # RapidTable rendering raw ruby arrays.
     module Array
       extend ActiveSupport::Concern
 
@@ -8,12 +11,15 @@ module RapidTable
         include Pagination if included_modules.include?(Concerns::Pagination)
       end
 
+      # rubocop:disable Lint/UnusedMethodArgument
       def each_record(batch_size: nil, skip_pagination: false, &block)
-        collection = self.records
+        collection = records
         collection = collection.unpaginated_array if skip_pagination
         collection.each(&block)
       end
+      # rubocop:enable Lint/UnusedMethodArgument
 
+      # RapidTable sorting functionality for raw ruby arrays.
       module Sorting
         extend ActiveSupport::Concern
 
@@ -30,6 +36,7 @@ module RapidTable
         end
       end
 
+      # RapidTable pagination functionality for raw ruby arrays.
       module Pagination
         extend ActiveSupport::Concern
 
@@ -50,33 +57,33 @@ module RapidTable
           end_index = start_index + per_page - 1
 
           paginated_array = scope[start_index..end_index] || []
+          PaginatedArray.new(paginated_array, scope, page, per_page)
+        end
 
-          # TODO: don't do this
-          # Extend the array with pagination metadata
-          paginated_array.instance_eval do
-            @original_array = scope
-            @current_page = page
+        # A wrapper around an array that provides pagination metadata.
+        class PaginatedArray < ::Array
+          def initialize(array, original_array, current_page, per_page)
+            super(array)
+            @original_array = original_array
+            @current_page = current_page
             @per_page = per_page
-
-            def total_pages
-              return 0 if @original_array.nil? || @original_array.empty?
-              (@original_array.length.to_f / @per_page).ceil
-            end
-
-            def current_page
-              @current_page
-            end
-
-            def total_records_count
-              @original_array.length
-            end
-
-            def unpaginated_array
-              @original_array
-            end
           end
 
-          paginated_array
+          def total_pages
+            return 0 if @original_array.nil? || @original_array.empty?
+
+            (@original_array.length.to_f / @per_page).ceil
+          end
+
+          attr_reader :current_page
+
+          def total_records_count
+            @original_array.length
+          end
+
+          def unpaginated_array
+            @original_array
+          end
         end
       end
     end

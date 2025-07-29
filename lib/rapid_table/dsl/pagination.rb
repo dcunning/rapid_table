@@ -25,6 +25,7 @@ module RapidTable
       def self.extended(base)
         base.class_eval do
           include RapidTable::Pagination
+          include InstanceMethods
 
           class_attribute :skip_pagination, default: false, instance_accessor: false
 
@@ -44,15 +45,20 @@ module RapidTable
             alias_method :skip_pagination?, :skip_pagination
           end
 
-          # convert the column and column_group symbols into the actual objects
-          # as defined by the class methods.
-          register_initializer :pagination_dsl, before: :pagination do |table, config|
-            config.skip_pagination = table.class.skip_pagination if config.skip_pagination.nil?
-            config.per_page ||= table.class.per_page
-            config.available_per_pages ||= table.class.available_per_pages
-            config.page_param ||= table.class.page_param
-            config.per_page_param ||= table.class.per_page_param
-          end
+          register_initializer :pagination_dsl, before: :pagination
+        end
+      end
+
+      # Instance methods for handling pagination DSL initialization.
+      module InstanceMethods
+        # convert the column and column_group symbols into the actual objects
+        # as defined by the class methods.
+        def initialize_pagination_dsl(config)
+          config.skip_pagination = self.class.skip_pagination if config.skip_pagination.nil?
+          config.per_page ||= self.class.per_page
+          config.available_per_pages ||= self.class.available_per_pages
+          config.page_param ||= self.class.page_param
+          config.per_page_param ||= self.class.per_page_param
         end
       end
     end

@@ -66,7 +66,7 @@ module RapidTable
     # @param scope [Object] The scope to filter (e.g., ActiveRecord::Relation)
     # @return [Object] The filtered scope
     # @raise [ExtensionRequiredError] If no extension provides this functionality
-    def filter_search(scope)
+    def filter_search(_scope)
       raise ExtensionRequiredError, "not implemented"
     end
 

@@ -5,7 +5,7 @@ module RapidTable
   # in RapidTable. It exposes the following configuration options to RapidTable::Base:
   #
   # @option config csv_column_separator [String] The separator to use for CSV exports (default: ",")
-  # @option config export_batch_size [Integer] The number of records to process in each batch during export (default: 1000)
+  # @option config export_batch_size [Integer] The number of records to process in each batch (default: 1000)
   # @option config export_formats [Array<Symbol>] The formats available for export (default: [:csv, :json])
   # @option config skip_export [Boolean] Whether to skip export functionality entirely
   #
@@ -95,6 +95,8 @@ module RapidTable
       @exporting_data
     end
 
+    # rubocop:disable Lint/UnusedMethodArgument
+
     # Iterates over records for export processing. Must be implemented by extensions.
     #
     # @param batch_size [Integer, nil] The number of records to process in each batch
@@ -104,6 +106,7 @@ module RapidTable
     def each_record(batch_size: nil, skip_pagination: false)
       raise ExtensionRequiredError
     end
+    # rubocop:enable Lint/UnusedMethodArgument
 
   private
 

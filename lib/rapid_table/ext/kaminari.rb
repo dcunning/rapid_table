@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module RapidTable
   module Ext
+    # Kaminari functionality for RapidTable
     module Kaminari
       extend ActiveSupport::Concern
 
@@ -7,6 +10,7 @@ module RapidTable
         include Pagination if included_modules.include?(Concerns::Pagination)
       end
 
+      # Kaminari Pagination functionality for RapidTable
       module Pagination
         extend ActiveSupport::Concern
 

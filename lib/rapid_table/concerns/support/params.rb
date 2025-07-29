@@ -7,8 +7,21 @@ module RapidTable
       extend ActiveSupport::Concern
 
       included do
+        include RegisterProcs
+
         attr_writer :param_name
         attr_accessor :full_params
+
+        # the action in which the table appears by default (not in response to a POST action)
+        attr_accessor :action_name
+
+        register_initializer :params
+
+        config_class! do
+          attr_accessor :params
+          attr_accessor :param_name
+          attr_accessor :action
+        end
       end
 
       # Gets the parameters for this table, handling nested parameter names.
@@ -94,6 +107,14 @@ module RapidTable
         registered_params(**overrides).map do |name, value|
           hidden_field_tag(param_name(name), value)
         end.join.html_safe
+      end
+
+    private
+
+      def initialize_params(config)
+        self.param_name = config.param_name
+        self.full_params = config.params || {}
+        self.action_name = config.action || full_params[:action]
       end
     end
   end

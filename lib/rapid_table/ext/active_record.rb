@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module RapidTable
   module Ext
+    # RapidTable rendering ActiveRecord relations.
     module ActiveRecord
       extend ActiveSupport::Concern
 
@@ -9,7 +12,7 @@ module RapidTable
       end
 
       def each_record(batch_size: nil, skip_pagination: false, &block)
-        collection = self.records
+        collection = records
         collection = collection.unscope(:limit, :offset) if skip_pagination
         collection.find_each(batch_size:, &block)
       end
@@ -18,6 +21,7 @@ module RapidTable
         record.send(record.class.primary_key)
       end
 
+      # RapidTable sorting functionality for ActiveRecord.
       module Sorting
         extend ActiveSupport::Concern
 
@@ -47,6 +51,7 @@ module RapidTable
         end
       end
 
+      # RapidTable search functionality for ActiveRecord.
       module Search
         extend ActiveSupport::Concern
 

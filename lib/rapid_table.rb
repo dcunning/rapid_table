@@ -12,6 +12,7 @@ loader.inflector.inflect(
 loader.collapse("#{__dir__}/rapid_table/concerns")
 loader.setup
 
+# RapidTable is a gem for rendering tables in Rails applications.
 module RapidTable
   class Error < StandardError; end
   class ColumnNotFoundError < Error; end
