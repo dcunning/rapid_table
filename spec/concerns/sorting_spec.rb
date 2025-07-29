@@ -42,6 +42,11 @@ RSpec.describe RapidTable::Sorting do
       expect(table.sort_order_param_value).to eq("desc")
     end
 
+    it "skips blank sort order params" do
+      table.params[:dir] = ""
+      expect(table.sort_order_param_value).to be_nil
+    end
+
     it "validates sort order values" do
       table.params[:dir] = "invalid"
       expect(table.sort_order_param_value).to be_nil

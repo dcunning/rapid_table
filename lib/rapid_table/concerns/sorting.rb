@@ -55,7 +55,11 @@ module RapidTable
     end
 
     def sort_order
-      @sort_order ||= (sort_order_param_value || config.sort_order || sort_column&.sort_order)&.to_s || "asc"
+      return @sort_order if defined?(@sort_order)
+
+      @sort_order = (sort_order_param_value || sort_column&.sort_order)&.to_s
+      @sort_order = "asc" if @sort_order.blank?
+      @sort_order
     end
 
     def filter_sorting(_scope)
@@ -80,7 +84,7 @@ module RapidTable
 
     def sort_order_param_value
       value = params[sort_order_param]
-      value = nil if value.present? && !available_sort_orders.include?(value)
+      value = nil if value && !available_sort_orders.include?(value)
       value
     end
 
