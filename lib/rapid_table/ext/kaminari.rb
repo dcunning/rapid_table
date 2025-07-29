@@ -7,7 +7,7 @@ module RapidTable
       extend ActiveSupport::Concern
 
       included do
-        include Pagination if included_modules.include?(Concerns::Pagination)
+        include Pagination if included_modules.include?(RapidTable::Pagination)
       end
 
       # Kaminari Pagination functionality for RapidTable

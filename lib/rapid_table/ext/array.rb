@@ -7,8 +7,8 @@ module RapidTable
       extend ActiveSupport::Concern
 
       included do
-        include Sorting if included_modules.include?(Concerns::Sorting)
-        include Pagination if included_modules.include?(Concerns::Pagination)
+        include Sorting if included_modules.include?(RapidTable::Sorting)
+        include Pagination if included_modules.include?(RapidTable::Pagination)
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
