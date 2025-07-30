@@ -13,6 +13,11 @@ module RapidTable
     attr_reader :table_name
     attr_reader :config
 
+    with_options to: :records do
+      delegate :empty?
+      delegate :any?
+    end
+
     def initialize(base_scope, id: nil, template: nil, **options, &block)
       ensure_base_scope_or_block(base_scope, block)
 
@@ -48,7 +53,7 @@ module RapidTable
       if param_name
         view_context.url_for(action: action_name, table: param_name, param_name => options, format:)
       else
-        view_context.url_for(action: action_name, format:, **options)
+        view_context.url_for(action: action_name, format:, table: "", **options)
       end
     end
 
