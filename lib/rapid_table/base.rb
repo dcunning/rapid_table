@@ -16,7 +16,7 @@ module RapidTable
     def initialize(base_scope, id: nil, template: nil, **options, &block)
       ensure_base_scope_or_block(base_scope, block)
 
-      super(**options)
+      super()
 
       @base_scope = base_scope || block
       @template = template
