@@ -43,12 +43,12 @@ module RapidTable
       raise ExtensionRequiredError
     end
 
-    def table_path(view_context: self, **options)
+    def table_path(view_context: self, format: nil, **options)
       options = options.reverse_merge(registered_params)
       if param_name
-        view_context.url_for(action: action_name, param_name => options)
+        view_context.url_for(action: action_name, param_name => options, format:)
       else
-        view_context.url_for(action: action_name, **options)
+        view_context.url_for(action: action_name, format:, **options)
       end
     end
 
