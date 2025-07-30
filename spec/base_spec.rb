@@ -4,10 +4,16 @@ require "rails_helper"
 
 RSpec.describe RapidTable::Base do
   describe "#table_path" do
-    it "generates a path with the format at the top level even when the param_name is present" do
+    it "adds a table param to support multiple tables in the same action" do
       pending "need enable #url_for"
       table = RapidTable::Base.new([], param_name: :users)
-      expect(table.table_path(format: :csv, page: 2)).to eq("/users.csv?users[page]=2")
+      expect(table.table_path).to eq("/users.csv?table=users")
+    end
+
+    it "generates a path with the format at the top level with a param_name" do
+      pending "need enable #url_for"
+      table = RapidTable::Base.new([], param_name: :users)
+      expect(table.table_path(format: :csv, page: 2)).to eq("/users.csv?table=users&users[page]=2")
     end
   end
 end

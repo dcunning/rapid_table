@@ -46,7 +46,7 @@ module RapidTable
     def table_path(view_context: self, format: nil, **options)
       options = options.reverse_merge(registered_params)
       if param_name
-        view_context.url_for(action: action_name, param_name => options, format:)
+        view_context.url_for(action: action_name, table: param_name, param_name => options, format:)
       else
         view_context.url_for(action: action_name, format:, **options)
       end
