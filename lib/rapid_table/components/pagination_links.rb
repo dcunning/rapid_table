@@ -15,7 +15,7 @@ module RapidTable
 
       # rubocop:disable Metrics/ParameterLists
       def initialize(current_page, total_pages, path:, table_name: nil, skip_turbo: false, **options)
-        super
+        super()
 
         @current_page = current_page
         @total_pages = total_pages
