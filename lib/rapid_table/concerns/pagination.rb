@@ -56,7 +56,7 @@ module RapidTable
     #
     # @return [Boolean] True if pagination should be hidden, false otherwise
     def only_ever_one_page?
-      skip_pagination? || total_records_count <= available_per_pages.first
+      skip_pagination? || (total_records_count && total_records_count <= available_per_pages.first)
     end
 
     # Gets the per_page value from the request parameters.

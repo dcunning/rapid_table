@@ -30,7 +30,7 @@ module RapidTable
       # rubocop:enable Metrics/ParameterLists
 
       def render?
-        @total_pages > 1
+        @total_pages.nil? || @total_pages > 1
       end
 
       def call
@@ -75,7 +75,7 @@ module RapidTable
       end
 
       def next_link(current_page, total_pages)
-        return nil if current_page >= total_pages
+        return nil if total_pages && current_page >= total_pages
 
         tag.span(class: "next") do
           pagination_link_to(t(:next), page_path(current_page + 1), rel: "next")
@@ -83,7 +83,7 @@ module RapidTable
       end
 
       def last_link(current_page, total_pages)
-        return nil if current_page >= total_pages
+        return nil if total_pages.nil? || current_page >= total_pages
 
         tag.span(class: "last") do
           pagination_link_to(t(:last), page_path(total_pages))
@@ -111,7 +111,7 @@ module RapidTable
         end
 
         # Add gap after if needed
-        links << tag.span(t(:gap), class: "page gap") if end_page < total_pages
+        links << tag.span(t(:gap), class: "page gap") if total_pages && end_page < total_pages
 
         links
       end
@@ -121,12 +121,12 @@ module RapidTable
         siblings = 4
 
         start_page = [current_page - siblings, 1].max
-        end_page = [current_page + siblings, total_pages].min
+        end_page = [current_page + siblings, total_pages || Float::INFINITY].min
 
         # Adjust if we're near the beginning or end
         if start_page == 1
-          end_page = [current_page + siblings, total_pages].min
-        elsif end_page == total_pages
+          end_page = [current_page + siblings, total_pages || Float::INFINITY].min
+        elsif total_pages && end_page == total_pages
           start_page = [current_page - siblings, 1].max
         end
 
