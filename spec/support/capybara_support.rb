@@ -5,6 +5,7 @@ require "capybara/cuprite"
 browser_options = { 'no-sandbox': true, 'disable-gpu': true }
 
 Capybara.disable_animation = true
+Capybara.raise_server_errors = true
 
 Capybara.register_driver :cuprite_desktop do |app|
   # debug with: page.driver.debug(binding)

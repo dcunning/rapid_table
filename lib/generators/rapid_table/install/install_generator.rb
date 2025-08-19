@@ -31,8 +31,8 @@ module RapidTable
       end
 
       def create_view_component
-        template "rapid_table.rb", "app/components/rapid_table.rb"
-        template "rapid_table.html.erb", "app/components/rapid_table.html.erb"
+        template "application_table.rb", "app/components/application_table.rb"
+        template "application_table.html.erb", "app/components/application_table.html.erb"
       end
     end
   end

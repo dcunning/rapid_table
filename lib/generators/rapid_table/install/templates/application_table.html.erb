@@ -27,7 +27,7 @@
                   </th>
                 <%% end %>
                 <%% columns.each do |column| %>
-                  <th scope="col" class="rapid-table-header-cell <%%= column_alignment column %>">
+                  <th scope="col" class="rapid-table-header-cell">
                     <%%= column_label column %>
                   </th>
                 <%% end %>
@@ -43,7 +43,7 @@
                     </td>
                   <%% end %>
                   <%% columns.each do |column| %>
-                    <td class="rapid-table-cell <%%= column_alignment column %>">
+                    <td class="rapid-table-cell">
                       <%%= column_cell(record, column) %>
                     </td>
                   <%% end %>

@@ -1,24 +1,44 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Sandbox application demos the features of rapid_table for system tests
 
-Things you may want to cover:
+## Generated via
 
-* Ruby version
+```bash
+rails new sandbox --skip-git --skip-docker --skip-keeps --skip-action-mailer --skip-action-mailbox --skip-action-text --skip-active-job --skip-jbuilder --skip-test --skip-system-test --skip-bootsnap --skip-dev-gems --skip-thruster --skip-rubocop --skip-brakeman --skip-ci --skip-kamal --skip-solid
 
-* System dependencies
+cd sandbox
+rm Gemfile Gemfile.lock
+rm bin/bundle
+rm bin/dev
+rm config/environments/development.rb
+rm config/environments/production.rb
+```
 
-* Configuration
+Add this to the top of bin/rails
+```
+ENV["RAILS_ENV"] = "test"
+ENV["BUNDLE_GEMFILE"] = File.expand_path("../../../Gemfile", __dir__)
+```
 
-* Database creation
+```bash
+bin/rails g rspec:install
+```
 
-* Database initialization
 
-* How to run the test suite
+Create bin/rspec
+```bash
+#!/usr/bin/env ruby
+# This script runs rspec using the parent project's Gemfile
 
-* Services (job queues, cache servers, search engines, etc.)
+ENV['BUNDLE_GEMFILE'] = File.expand_path('../../../../Gemfile', __FILE__)
+load File.expand_path('../../../../bin/rspec', __FILE__)
+```
 
-* Deployment instructions
+```bash
+chmod +x bin/rspec
+```
 
-* ...
+```bash
+bin/rails g rapid_table:install
+```
