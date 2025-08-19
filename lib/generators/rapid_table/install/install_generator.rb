@@ -1,0 +1,39 @@
+# frozen_string_literal: true
+
+require "rails/generators/base"
+
+module RapidTable
+  module Generators
+    class InstallGenerator < Rails::Generators::Base
+      source_root File.expand_path("templates", __dir__)
+
+      desc "Installs RapidTable into your Rails application"
+
+      # TODO: allow the generate to specify a different name than "rapid_table" like "admin_table"
+
+      def create_locale_file
+        template "rapid_table.en.yml", "config/locales/rapid_table.en.yml"
+      end
+
+      def create_assets
+        if false && tailwind?
+          template "rapid_table.tailwind.scss", "app/assets/stylesheets/rapid_table.scss"
+        else
+          # NOTE: this file is just a compiled version of the tailwind CSS
+          template "rapid_table.css", "app/assets/stylesheets/rapid_table.css"
+        end
+
+        template "rapid_table_controller.js", "app/assets/javascript/controllers/rapid_table_controller.js"
+      end
+
+      def create_concern
+        template "uses_rapid_tables.rb", "app/controllers/concerns/uses_rapid_tables.rb"
+      end
+
+      def create_view_component
+        template "rapid_table.rb", "app/components/rapid_table.rb"
+        template "rapid_table.html.erb", "app/components/rapid_table.html.erb"
+      end
+    end
+  end
+end

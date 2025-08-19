@@ -9,8 +9,18 @@ gem "irb"
 gem "rake", "~> 13.0"
 
 group :development, :test do
+  gem "capybara", "~> 3", require: false
+  gem "cuprite", require: false
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "ferrum", "~> 0", require: false
+  gem "importmap-rails"
+  gem "propshaft"
+  gem "puma"
   gem "rspec-rails", "~> 6.0"
   gem "rubocop", "~> 1.21"
   gem "simplecov", "~> 0.22.0", require: false
+  gem "stimulus-rails"
   gem "sqlite3"
+  gem "turbo-rails"
+  gem "tzinfo-data", platforms: %i[ windows jruby ]
 end
