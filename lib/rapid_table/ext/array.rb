@@ -71,7 +71,6 @@ module RapidTable
         end
       end
 
-
       # RapidTable searching functionality for raw ruby arrays.
       module Search
         extend ActiveSupport::Concern

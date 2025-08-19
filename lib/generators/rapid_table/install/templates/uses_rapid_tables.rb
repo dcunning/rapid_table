@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# This concern is used to add rapid_table functionality to controllers.
 module UsesRapidTables
   def determine_rapid_table_class(records)
     "#{records.klass.name.pluralize}Table".constantize
@@ -41,7 +44,7 @@ module UsesRapidTables
     render json: table.to_json
   end
 
-  def replace_rapid_table_stream(table, partial: nil, **options)
+  def replace_rapid_table_stream(table, partial: nil, **_options)
     return unless rapid_table?(table)
 
     partial ||= table.class.name.underscore.sub("_table", "/table")

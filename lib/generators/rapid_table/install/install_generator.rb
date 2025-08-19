@@ -4,12 +4,14 @@ require "rails/generators/base"
 
 module RapidTable
   module Generators
+    # Copy files to the application to get started with RapidTable
     class InstallGenerator < Rails::Generators::Base
       source_root File.expand_path("templates", __dir__)
 
       desc "Installs RapidTable into your Rails application"
 
       # TODO: allow the generate to specify a different name than "rapid_table" like "admin_table"
+      # TODO: add `include UseRapidTables`` to the application controller
 
       def create_locale_file
         template "rapid_table.en.yml", "config/locales/rapid_table.en.yml"
