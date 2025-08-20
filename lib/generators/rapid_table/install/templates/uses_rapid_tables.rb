@@ -44,7 +44,7 @@ module UsesRapidTables
     render json: table.to_json
   end
 
-  def replace_rapid_table_stream(table, partial: nil, **_options)
+  def replace_rapid_table_stream(table, partial: nil, locals: {})
     return unless rapid_table?(table)
 
     partial ||= table.class.name.underscore.sub("_table", "/table")
@@ -52,12 +52,12 @@ module UsesRapidTables
     turbo_stream.replace(
       table.id,
       partial:,
-      locals: { table: },
+      locals: locals.merge(table:),
     )
   end
 
-  def replace_rapid_table(table, partial: nil, **options)
-    stream = replace_rapid_table_stream(table, partial:, **options)
+  def replace_rapid_table(table, partial: nil, locals: {})
+    stream = replace_rapid_table_stream(table, partial:, locals:)
     render turbo_stream: stream if stream
   end
 end

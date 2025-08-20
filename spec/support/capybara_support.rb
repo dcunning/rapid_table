@@ -9,6 +9,7 @@ Capybara.raise_server_errors = true
 
 Capybara.register_driver :cuprite_desktop do |app|
   # debug with: page.driver.debug(binding)
+  # logger = StringIO.new
   Capybara::Cuprite::Driver.new(app, window_size: [ 1200, 800 ], inspector: ENV['INSPECTOR'], process_timeout: 10, browser_options:)
 end
 

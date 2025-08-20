@@ -25,7 +25,7 @@ module RapidTable
           template "rapid_table.css", "app/assets/stylesheets/rapid_table.css"
         end
 
-        template "rapid_table_controller.js", "app/assets/javascript/controllers/rapid_table_controller.js"
+        template "rapid_table_controller.js", "app/javascript/controllers/rapid_table_controller.js"
       end
 
       def create_concern

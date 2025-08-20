@@ -1,4 +1,6 @@
 class MockedTablesController < ApplicationController
+  include UsesRapidTables
+  
   cattr_accessor :table_class
   cattr_accessor :records
   cattr_accessor :options
@@ -12,5 +14,10 @@ class MockedTablesController < ApplicationController
       **(self.class.options || {}),
       &self.class.block
     )
+    
+    respond_to do |format|
+      format.html
+      format.turbo_stream { replace_rapid_table(@table, partial: "mocked_tables/table") }
+    end
   end
 end
