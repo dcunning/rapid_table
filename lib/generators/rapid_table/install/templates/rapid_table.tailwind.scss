@@ -1,0 +1,109 @@
+/** 
+ * RapidTable Styles
+ * Customize these styles to match your application's design
+ */
+
+.rapid-table-wrapper {
+  @apply mt-8 flow-root;
+}
+
+.rapid-table-scroll-wrapper {
+  @apply -mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8;
+}
+
+.rapid-table-container {
+  @apply inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8;
+}
+
+.rapid-table-outer {
+  @apply overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg;
+}
+
+.rapid-table {
+  @apply min-w-full divide-y divide-gray-300;
+}
+
+.rapid-table-header {
+  @apply bg-gray-50;
+}
+
+.rapid-table-header-cell {
+  @apply p-0 text-left text-sm font-semibold text-gray-900;
+}
+
+.rapid-table-header-cell > * {
+  @apply block py-3.5 pl-4 pr-3 sm:pl-6;
+}
+.rapid-table-header-cell > a {
+  @apply hover:bg-gray-200;
+}
+
+.rapid-table-header-sort-order {
+  @apply inline-block leading-none ml-1;
+  font-size: 0.5rem;
+
+}
+
+.rapid-table-header-actions {
+  @apply relative py-3.5 pl-3 pr-4 sm:pr-6 text-right text-gray-900;
+}
+
+.rapid-table-body {
+  @apply divide-y divide-gray-200 bg-white;
+}
+
+.rapid-table-cell {
+  @apply whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6;
+}
+
+.rapid-table-cell .fan-standing {
+  @apply text-gray-900;
+}
+
+.rapid-table-actions-cell {
+  @apply relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6;
+}
+
+.rapid-table-select {
+  @apply p-2 border border-gray-300 rounded-md bg-white text-black;
+}
+
+.rapid-table-footer {
+  @apply flex justify-between items-center mt-8;
+}
+
+.rapid-table-empty-message {
+  @apply text-center;
+}
+
+.rapid-table-paginate {
+  @apply flex items-center justify-center;
+}
+
+.rapid-table-paginate nav.pagination {
+  @apply inline-flex -space-x-px rounded-md shadow-sm isolate;
+}
+
+.rapid-table-paginate .page a,
+.rapid-table-paginate .next a,
+.rapid-table-paginate .prev a,
+.rapid-table-paginate .first a,
+.rapid-table-paginate .last a {
+  @apply relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-300 ring-1 ring-inset ring-gray-700 hover:bg-gray-700 hover:text-white focus:z-20 focus:outline-offset-0;
+}
+
+.rapid-table-paginate .page.current {
+  @apply relative z-10 inline-flex items-center px-4 py-2 text-sm font-semibold bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
+}
+
+.rapid-table-paginate .first a {
+  @apply rounded-l-md;
+}
+
+.rapid-table-paginate .last a {
+  @apply rounded-r-md;
+}
+
+.rapid-table-paginate .gap {
+  @apply relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-300 ring-1 ring-inset ring-gray-700;
+}

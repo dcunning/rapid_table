@@ -19,6 +19,7 @@ module RapidTable
         attr_accessor :available_per_pages
         attr_accessor :page_param
         attr_accessor :per_page_param
+        attr_accessor :pagination_siblings_count
 
         alias_method :skip_pagination?, :skip_pagination
       end
@@ -28,6 +29,7 @@ module RapidTable
         delegate :available_per_pages
         delegate :page_param
         delegate :per_page_param
+        delegate :pagination_siblings_count
       end
 
       register_initializer :pagination
@@ -103,6 +105,7 @@ module RapidTable
         path: ->(page) { table_path(page_param => page) },
         table_name:,
         skip_turbo:,
+        siblings_count: pagination_siblings_count,
       )
     end
 
@@ -141,6 +144,7 @@ module RapidTable
       config.page_param ||= :page
       config.per_page_param ||= :per
       config.available_per_pages ||= [25, 50, 100]
+      config.pagination_siblings_count ||= 4
 
       register_param_name(page_param, per_page_param)
     end

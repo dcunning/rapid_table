@@ -3,7 +3,7 @@
 require "spec_helper"
 
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('dummy/config/environment', __dir__)
+require File.expand_path('sandbox/config/environment', __dir__)
 require 'rspec/rails'
 
 RapidTable::LOADER.eager_load

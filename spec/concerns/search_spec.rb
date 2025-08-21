@@ -39,4 +39,10 @@ RSpec.describe RapidTable::Search do
       expect { table.filter_search(nil) }.to raise_error(RapidTable::ExtensionRequiredError)
     end
   end
+
+  describe "not implemented methods" do
+    it "raises an error when #filter_search is called" do
+      expect { table.filter_search(nil) }.to raise_error(RapidTable::ExtensionRequiredError)
+    end
+  end
 end

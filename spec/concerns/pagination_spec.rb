@@ -57,4 +57,12 @@ RSpec.describe RapidTable::Pagination do
       expect(table.page_param_value).to eq("2")
     end
   end
+
+  describe "not implemented methods" do
+    %w[total_records_count total_pages current_page].each do |method|
+      it "raises an error when #{method} is called" do
+        expect { table.send(method) }.to raise_error(RapidTable::ExtensionRequiredError)
+      end
+    end
+  end
 end

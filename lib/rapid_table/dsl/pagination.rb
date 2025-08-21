@@ -34,16 +34,7 @@ module RapidTable
 
           class_attribute :per_page, instance_accessor: false
           class_attribute :available_per_pages, instance_accessor: false
-
-          config_class! do
-            attr_accessor :skip_pagination
-            attr_accessor :per_page
-            attr_accessor :available_per_pages
-            attr_accessor :page_param
-            attr_accessor :per_page_param
-
-            alias_method :skip_pagination?, :skip_pagination
-          end
+          class_attribute :pagination_siblings_count, instance_accessor: false
 
           register_initializer :pagination_dsl, before: :pagination
         end
@@ -59,6 +50,7 @@ module RapidTable
           config.available_per_pages ||= self.class.available_per_pages
           config.page_param ||= self.class.page_param
           config.per_page_param ||= self.class.per_page_param
+          config.pagination_siblings_count ||= self.class.pagination_siblings_count
         end
       end
     end

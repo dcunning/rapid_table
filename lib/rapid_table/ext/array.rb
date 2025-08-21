@@ -7,8 +7,9 @@ module RapidTable
       extend ActiveSupport::Concern
 
       included do
-        include Sorting if included_modules.include?(RapidTable::Sorting)
         include Pagination if included_modules.include?(RapidTable::Pagination)
+        include Sorting if included_modules.include?(RapidTable::Sorting)
+        include Search if included_modules.include?(RapidTable::Search)
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
@@ -18,23 +19,6 @@ module RapidTable
         collection.each(&block)
       end
       # rubocop:enable Lint/UnusedMethodArgument
-
-      # RapidTable sorting functionality for raw ruby arrays.
-      module Sorting
-        extend ActiveSupport::Concern
-
-        included do
-          register_filter :sorting, unless: :skip_sorting?
-        end
-
-        def filter_sorting(scope)
-          return unless sort_column
-
-          sorted = scope.sort_by { |record| record.send(sort_column.id) }
-          sorted = sorted.reverse if sort_order == "desc"
-          sorted
-        end
-      end
 
       # RapidTable pagination functionality for raw ruby arrays.
       module Pagination
@@ -84,6 +68,53 @@ module RapidTable
           def unpaginated_array
             @original_array
           end
+        end
+      end
+
+      # RapidTable searching functionality for raw ruby arrays.
+      module Search
+        extend ActiveSupport::Concern
+
+        def self.included(base)
+          base.class_eval do
+            column_class! do
+              attr_accessor :searchable
+              alias_method :searchable?, :searchable
+            end
+          end
+        end
+
+        def filter_search(scope)
+          columns = self.columns.select(&:searchable?)
+          return scope if columns.none? || search_query.blank?
+
+          scope.filter do |record|
+            columns.any? do |column|
+              search_match?(record, column)
+            end
+          end
+        end
+
+        def search_match?(record, column)
+          value = record.send(column.id)
+          value.to_s.downcase.include?(search_query.downcase) if value && search_query
+        end
+      end
+
+      # RapidTable sorting functionality for raw ruby arrays.
+      module Sorting
+        extend ActiveSupport::Concern
+
+        included do
+          register_filter :sorting, unless: :skip_sorting?
+        end
+
+        def filter_sorting(scope)
+          return unless sort_column
+
+          sorted = scope.sort_by { |record| record.send(sort_column.id) }
+          sorted = sorted.reverse if sort_order == "desc"
+          sorted
         end
       end
     end

@@ -1,0 +1,22 @@
+en:
+  rapid_table:
+    default:
+      empty_message: "No records found"
+      bulk_actions:
+        placeholder: "Bulk Actions"
+        button: Perform
+        button_title: "Perform Bulk Action"
+      export:
+        formats:
+          csv: CSV
+          json: JSON
+      pagination:
+        first: "« First"
+        prev: "‹ Prev"
+        next: "Next ›"
+        last: "Last »"
+        page: "Page"
+        gap: "…"
+        current: "Current"
+      search:
+        placeholder: "Search..."
