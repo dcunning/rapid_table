@@ -10,11 +10,12 @@ module RapidTable
 
       attr_reader :current_page
       attr_reader :total_pages
+      attr_reader :siblings_count
 
       attr_accessor :skip_turbo
 
       # rubocop:disable Metrics/ParameterLists
-      def initialize(current_page, total_pages, path:, table_name: nil, skip_turbo: false, **options)
+      def initialize(current_page, total_pages, path:, table_name: nil, skip_turbo: false, siblings_count: 4, **options)
         super()
 
         @current_page = current_page
@@ -22,6 +23,7 @@ module RapidTable
 
         @path = path
         @table_name = table_name
+        @siblings_count = siblings_count
 
         @options = options
 
@@ -97,7 +99,7 @@ module RapidTable
         start_page, end_page = calculate_page_range(current_page, total_pages)
 
         # Add gap before if needed
-        links << tag.span(t(:gap), class: "page gap") if start_page > 1
+        links << tag.span(t(:gap), class: "page gap") if has_gaps? && start_page > 1
 
         # Add page numbers
         (start_page..end_page).each do |page|
@@ -111,23 +113,24 @@ module RapidTable
         end
 
         # Add gap after if needed
-        links << tag.span(t(:gap), class: "page gap") if total_pages && end_page < total_pages
+        links << tag.span(t(:gap), class: "page gap") if has_gaps? && total_pages && end_page < total_pages
 
         links
       end
 
-      def calculate_page_range(current_page, total_pages)
-        # Show up to 4 siblings on each side of current page
-        siblings = 4
+      def has_gaps?
+        siblings_count > 0
+      end
 
-        start_page = [current_page - siblings, 1].max
-        end_page = [current_page + siblings, total_pages || Float::INFINITY].min
+      def calculate_page_range(current_page, total_pages)
+        start_page = [current_page - siblings_count, 1].max
+        end_page = [current_page + siblings_count, total_pages || Float::INFINITY].min
 
         # Adjust if we're near the beginning or end
         if start_page == 1
-          end_page = [current_page + siblings, total_pages || Float::INFINITY].min
+          end_page = [current_page + siblings_count, total_pages || Float::INFINITY].min
         elsif total_pages && end_page == total_pages
-          start_page = [current_page - siblings, 1].max
+          start_page = [current_page - siblings_count, 1].max
         end
 
         [start_page, end_page]

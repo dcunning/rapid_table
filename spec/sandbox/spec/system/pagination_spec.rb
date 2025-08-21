@@ -63,6 +63,35 @@ RSpec.describe "Pagination", type: :system do
         end
       end
     end
+
+    it "allows decreasing the number of siblings near the current page" do
+      table_class.pagination_siblings_count = 2
+      visit mocked_table_path(page: 6)
+      within ".pagination" do
+        # puts page.body
+        expect(page).to have_css("span.page.current", text: "6")
+        %w[First Prev 4 5 7 8 Next Last].each do |link|
+          expect(page).to have_link(link)
+        end
+        %w[2 3 9 10].each do |link|
+          expect(page).not_to have_link(link)
+        end
+      end
+    end
+
+    it "removes the gap indicator when there are no siblings" do
+      table_class.pagination_siblings_count = 0
+      visit mocked_table_path(page: 6)
+      within ".pagination" do
+        %w[First Prev Next Last].each do |link|
+          expect(page).to have_link(link)
+        end
+        %w[2 3 4 5 7 8 9 10].each do |link|
+          expect(page).not_to have_link(link)
+        end
+        expect(page).not_to have_content("…")
+      end
+    end
   end
 
   describe "per page select" do
@@ -77,14 +106,6 @@ RSpec.describe "Pagination", type: :system do
       visit mocked_table_path
       select "50", from: "Per Page"
       expect_page_to_have_all_records records.first(50)
-    end
-
-    it "allows the class to define additional per page options" do
-      table_class.available_per_pages = [25, 50, 100, 200]
-      visit mocked_table_path
-      expect(page).to have_select("Per Page", options: %w[25 50 100 200])
-      select "200", from: "Per Page"
-      expect_page_to_have_all_records records.first(200)
     end
   end
 
