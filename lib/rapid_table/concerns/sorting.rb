@@ -52,6 +52,8 @@ module RapidTable
       return unless sort_column_id.is_a?(Symbol) || sort_column_id.is_a?(String)
 
       @sort_column = find_sortable_column(sort_column_id)
+      Rails.logger.warn("Sortable column #{sort_column_id} not found") unless @sort_column
+      @sort_column
     end
 
     def sort_order

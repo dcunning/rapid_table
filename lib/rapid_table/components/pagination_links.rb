@@ -99,27 +99,31 @@ module RapidTable
         start_page, end_page = calculate_page_range(current_page, total_pages)
 
         # Add gap before if needed
-        links << tag.span(t(:gap), class: "page gap") if has_gaps? && start_page > 1
+        links << tag.span(t(:gap), class: "page gap") if gaps? && start_page > 1
 
         # Add page numbers
         (start_page..end_page).each do |page|
-          links << if page == current_page
-                     tag.span(page, class: "page current")
-                   else
-                     tag.span(class: "page") do
-                       pagination_link_to(page, page_path(page))
-                     end
-                   end
+          links << generate_page_link(page, current_page)
         end
 
         # Add gap after if needed
-        links << tag.span(t(:gap), class: "page gap") if has_gaps? && total_pages && end_page < total_pages
+        links << tag.span(t(:gap), class: "page gap") if gaps? && total_pages && end_page < total_pages
 
         links
       end
 
-      def has_gaps?
-        siblings_count > 0
+      def generate_page_link(page, current_page)
+        if page == current_page
+          tag.span(page, class: "page current")
+        else
+          tag.span(class: "page") do
+            pagination_link_to(page, page_path(page))
+          end
+        end
+      end
+
+      def gaps?
+        siblings_count.positive?
       end
 
       def calculate_page_range(current_page, total_pages)

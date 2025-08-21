@@ -75,8 +75,29 @@ module RapidTable
       module Search
         extend ActiveSupport::Concern
 
-        def initialize_search(config)
-          config.skip_search = true
+        def self.included(base)
+          base.class_eval do
+            column_class! do
+              attr_accessor :searchable
+              alias_method :searchable?, :searchable
+            end
+          end
+        end
+
+        def filter_search(scope)
+          columns = self.columns.select(&:searchable?)
+          return scope if columns.none? || search_query.blank?
+
+          scope.filter do |record|
+            columns.any? do |column|
+              search_match?(record, column)
+            end
+          end
+        end
+
+        def search_match?(record, column)
+          value = record.send(column.id)
+          value.to_s.downcase.include?(search_query.downcase) if value && search_query
         end
       end
 
