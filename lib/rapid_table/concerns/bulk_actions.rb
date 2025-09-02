@@ -94,8 +94,8 @@ module RapidTable
         "#{bulk_actions_param}[]",
         id,
         selected_bulk_action_record?(record),
-        id: "select_#{record.class.name.underscore}_#{id}",
-        title: "Select #{record.class.name.underscore.humanize}", # TODO: i18n
+        id: "#{table_name}_select_#{id}",
+        title: "Select",
         **options,
         data: hotwire_data(
           options,
