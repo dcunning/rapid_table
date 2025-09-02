@@ -112,9 +112,24 @@ module RapidTable
         def filter_sorting(scope)
           return unless sort_column
 
-          sorted = scope.sort_by { |record| record.send(sort_column.id) }
+          sorted = scope.sort(&method(:sort_compare_records))
           sorted = sorted.reverse if sort_order == "desc"
           sorted
+        end
+
+        def sort_compare_records(record_a, record_b)
+          a_val = record_a.send(sort_column.id)
+          b_val = record_b.send(sort_column.id)
+
+          if a_val.nil? && b_val.nil?
+            0
+          elsif a_val.nil?
+            1  # nil values go to the end
+          elsif b_val.nil?
+            -1 # nil values go to the end
+          else
+            a_val <=> b_val
+          end
         end
       end
     end
