@@ -57,7 +57,7 @@ module RapidTable
     def search_field_form(url: url_for(action: action_name), method: :get, **options, &block)
       form_tag(url, method:, **options.merge(data: { turbo_stream: })) do
         search = block_given? ? capture(&block) : search_field_tag
-        hidden_fields_for_registered_params(page: 1) << search
+        hidden_fields_for_registered_params(additional_params: { page: 1 }, except: search_param) << search
       end
     end
 

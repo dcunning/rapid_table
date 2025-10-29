@@ -25,6 +25,9 @@ RSpec.describe "Search", type: :system do
     expect(page).to have_text("Name 1.")
     expect(page).not_to have_text("Name 2.")
     expect(page).to have_text("Name 10.")
+
+    # it doesn't create a hidden field for the search param
+    expect(page).not_to have_css("input[name='q'][type='hidden']", visible: false)
   end
 
   private

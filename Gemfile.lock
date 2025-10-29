@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rapid_table (0.1.1)
+    rapid_table (0.1.2)
       csv (>= 3.0)
       rails (>= 7.0)
       view_component (>= 3.0)

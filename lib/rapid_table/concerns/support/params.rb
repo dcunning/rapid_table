@@ -98,13 +98,17 @@ module RapidTable
 
       # Generates hidden form fields for all registered parameters.
       #
-      # @param overrides [Hash] Optional parameter overrides
+      # @param additional_params [Hash] Optional parameter overrides
+      # @param except [Array<Symbol>] Optional parameters to exclude
       # @return [String] HTML string containing hidden input fields
       # @example
-      #   hidden_fields_for_registered_params(page: 2)
+      #   hidden_fields_for_registered_params(additional_params: { page: 2 })
       #   # => '<input type="hidden" name="table[page]" value="2" />...'
-      def hidden_fields_for_registered_params(**overrides)
-        registered_params(**overrides).map do |name, value|
+      def hidden_fields_for_registered_params(additional_params: {}, except: [])
+        params = registered_params(**additional_params)
+        params = params.except(*except)
+
+        params.map do |name, value|
           hidden_field_tag(param_name(name), value, id: nil)
         end.join.html_safe << hidden_field_tag("table", param_name || "", id: nil)
       end
